@@ -1,0 +1,43 @@
+{
+  "name": "shadertoy2webgl",
+  "version": "0.1.0",
+  "description": "Convert ShaderToy shaders to WebGL2 - CLI and library",
+  "type": "module",
+  "main": "./src/lib.js",
+  "exports": {
+    ".": "./src/lib.js",
+    "./cli": "./src/index.js"
+  },
+  "sideEffects": false,
+  "bugs": "https://github.com/metaory/shadertoy2webgl/issues",
+  "homepage": "https://github.com/metaory/shadertoy2webgl#readme",
+  "repository": "git+https://github.com/metaory/shadertoy2webgl.git",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/"
+  },
+  "bin": {
+    "shadertoy2webgl": "./src/index.js",
+    "st2webgl": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "templates",
+    "test",
+    "LICENSE"
+  ],
+  "keywords": [
+    "shadertoy",
+    "webgl",
+    "fragment",
+    "shader",
+    "transform",
+    "webgl2",
+    "glsl"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "metaory <metaory@gmail.com>",
+  "license": "MIT"
+}

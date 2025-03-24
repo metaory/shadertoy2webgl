@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg 
+  viewBox="0 0 100 100" 
+  xmlns="http://www.w3.org/2000/svg">
+  <!-- <style> svg { background-color: #02f7db; } </style> -->
+  <defs>
+    <linearGradient 
+      id="grad" 
+      x1="0%" 
+      y1="0%" 
+      x2="100%" 
+      y2="100%">
+      <stop offset="0%" stop-color="#2200ff"/>
+      <stop offset="100%" stop-color="#dd00ff"/>
+    </linearGradient>
+  </defs>
+  <text 
+    font-size="60" 
+    text-anchor="middle" 
+    dominant-baseline="middle" 
+    fill="url(#grad)" 
+    stroke="url(#grad)"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    >
+    <tspan x="44" y="26">𝓼</tspan>
+    <tspan x="70" y="26">𝓉</tspan>
+    <tspan x="75" y="60">𝗴</tspan>
+    <tspan x="85" y="74">ߊ</tspan>
+</text>
+</svg>

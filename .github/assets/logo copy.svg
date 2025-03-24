@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg 
+  viewBox="0 0 100 100" 
+  xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient 
+      id="grad" 
+      x1="0%" 
+      y1="0%" 
+      x2="100%" 
+      y2="100%">
+      <stop offset="0%" stop-color="#2200ff"/>
+      <stop offset="100%" stop-color="#dd00ff"/>
+    </linearGradient>
+  </defs>
+  <text 
+    font-size="80" 
+    x="48" 
+    y="50" 
+    text-anchor="middle" 
+    dominant-baseline="middle" 
+    fill="url(#grad)" 
+    stroke="url(#grad)"
+    stroke-width="6" 
+    stroke-linejoin="round"
+    stroke-linecap="round"
+    letter-spacing="-0.1em">ƍl</text>
+</svg>

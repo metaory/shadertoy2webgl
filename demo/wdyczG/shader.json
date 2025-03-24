@@ -1,0 +1,11 @@
+{
+  "id": "wdyczG",
+  "title": "uniform vec3",
+  "uniforms": {
+    "iResolution": "vec3",
+    "iTime": "float",
+    "iFrame": "float",
+    "iMouse": "vec4"
+  },
+  "code": "#define S(a,b,t) smoothstep(a,b,t)\n\nmat2 Rot(float a)\n{\n    float s = sin(a);\n    float c = cos(a);\n    return mat2(c, -s, s, c);\n}\n\n\n// Created by inigo quilez - iq/2014\n// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\nvec2 hash( vec2 p )\n{\n    p = vec2( dot(p,vec2(2127.1,81.17)), dot(p,vec2(1269.5,283.37)) );\n\treturn fract(sin(p)*43758.5453);\n}\n\nfloat noise( in vec2 p )\n{\n    vec2 i = floor( p );\n    vec2 f = fract( p );\n\t\n\tvec2 u = f*f*(3.0-2.0*f);\n\n    float n = mix( mix( dot( -1.0+2.0*hash( i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), \n                        dot( -1.0+2.0*hash( i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),\n                   mix( dot( -1.0+2.0*hash( i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), \n                        dot( -1.0+2.0*hash( i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);\n\treturn 0.5 + 0.5*n;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    float ratio = iResolution.x / iResolution.y;\n\n    vec2 tuv = uv;\n    tuv -= .5;\n\n    // rotate with Noise\n    float degree = noise(vec2(iTime*.1, tuv.x*tuv.y));\n\n    tuv.y *= 1./ratio;\n    tuv *= Rot(radians((degree-.5)*720.+180.));\n\ttuv.y *= ratio;\n\n    \n    // Wave warp with sin\n    float frequency = 5.;\n    float amplitude = 30.;\n    float speed = iTime * 2.;\n    tuv.x += sin(tuv.y*frequency+speed)/amplitude;\n   \ttuv.y += sin(tuv.x*frequency*1.5+speed)/(amplitude*.5);\n    \n    \n    // draw the image\n    vec3 colorYellow = vec3(.957, .804, .623);\n    vec3 colorDeepBlue = vec3(.192, .384, .933);\n    vec3 layer1 = mix(colorYellow, colorDeepBlue, S(-.3, .2, (tuv*Rot(radians(-5.))).x));\n    \n    vec3 colorRed = vec3(.910, .510, .8);\n    vec3 colorBlue = vec3(0.350, .71, .953);\n    vec3 layer2 = mix(colorRed, colorBlue, S(-.3, .2, (tuv*Rot(radians(-5.))).x));\n    \n    vec3 finalComp = mix(layer1, layer2, S(.5, -.3, tuv.y));\n    \n    vec3 col = finalComp;\n    \n    fragColor = vec4(col,1.0);\n}"
+}
