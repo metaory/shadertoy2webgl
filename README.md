@@ -1,7 +1,8 @@
 <div align="center">
     <img src=".github/assets/logo.svg" alt="demo" height="128" />
     <h3><kbd>shadertoy2webgl</kbd></h3>
-    <h4>Convert <kbd>ShaderToy</kbd> shaders to modern <kbd>WebGL2</kbd></h4>
+    <h4>Convert <kbd>ShaderToy</kbd> shaders</h4>
+    <h4>to modern <kbd>WebGL2</kbd></h4>
     <img src="demo/DdcfzH.png" alt="demo" height="200" />
 </div>
 
