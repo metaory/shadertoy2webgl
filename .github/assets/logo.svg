@@ -1,32 +1,168 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg 
-  viewBox="0 0 100 100" 
-  xmlns="http://www.w3.org/2000/svg">
-  <!-- <style> svg { background-color: #02f7db; } </style> -->
-  <defs>
-    <linearGradient 
-      id="grad" 
-      x1="0%" 
-      y1="0%" 
-      x2="100%" 
-      y2="100%">
-      <stop offset="0%" stop-color="#2200ff"/>
-      <stop offset="100%" stop-color="#dd00ff"/>
-    </linearGradient>
-  </defs>
-  <text 
-    font-size="60" 
-    text-anchor="middle" 
-    dominant-baseline="middle" 
-    fill="url(#grad)" 
-    stroke="url(#grad)"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    >
-    <tspan x="44" y="26">𝓼</tspan>
-    <tspan x="70" y="26">𝓉</tspan>
-    <tspan x="75" y="60">𝗴</tspan>
-    <tspan x="85" y="74">ߊ</tspan>
-</text>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 120 26" >
+      <!-- made with glitcher-cli v0.7
+        █▀▀ █░░ █ ▀█▀ █▀▀ █░█ █▀▀ █▀█
+        █▄█ █▄▄ █ ░█░ █▄▄ █▀█ ██▄ █▀▄
+      https://github.com/metaory/glitcher-cli -->
+      <!-- <style> svg { background-color: indigo; } </style> -->
+      
+      <text filter="url(#glitch)"
+            fill="#FFFFFF"
+            font-family="monospace, serif"
+            font-weight="bolder"
+            font-size="x-large"
+            text-anchor="middle"
+            lengthAdjust="spacingAndGlyphs"
+            textLength="70%"
+            dominant-baseline="mathematical"
+            x="50%" y="30%"
+      >st2webgl</text>
+      <defs>
+      <filter id="glitch"
+              primitiveUnits="objectBoundingBox"
+              x="0%"
+              y="0%"
+              height="100%">
+          <feColorMatrix in="SourceGraphic"
+                         result="red"
+                         type="matrix"
+                         values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" />
+          <feColorMatrix in="SourceGraphic"
+                         result="green"
+                         type="matrix"
+                         values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" />
+          <feColorMatrix in="SourceGraphic"
+                         result="blue"
+                         type="matrix"
+                         values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" />
+          <feOffset in="red"
+                    result="red-shifted"
+                    dx="-0.01"
+                    dy="0">
+          <animate attributeName="dx"
+                   keyTimes="0; 0.18; 0.34; 0.40; 0.41; 0.57; 0.59; 0.78; 0.80; 0.98"
+                   values="0.01; -0.01; 0.01; 0.00; 0.01; 0.01; 0.01; -0.01; -0.00; 0.00"
+                   begin="0"
+                   dur="46.82s"
+                   calcMode="discrete"
+                   repeatCount="indefinite"
+                   fill="freeze" />
+            </feOffset>
+            <feOffset in="blue"
+                      result="blue-shifted"
+                      dx="0.01"
+                      dy="0">
+                <animate attributeName="dx"
+                         keyTimes="0; 0.24; 0.46; 0.49; 0.51; 0.58; 0.78"
+                         values="0.00; -0.01; 0.01; -0.00; 0.00; 0.02; -0.01"
+                         begin="0"
+                         dur="46.24s"
+                         calcMode="discrete"
+                         repeatCount="indefinite"
+                         fill="freeze" />
+            </feOffset>
+            <feBlend mode="screen"
+                     in="red-shifted"
+                     in2="green"
+                     result="red-green" />
+            <feBlend mode="screen"
+                     in="red-green"
+                     in2="blue-shifted"
+                     result="blended" />
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="0%"
+              height="18.43%"
+              result="slice_1a" />
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="18.43%"
+              height="13.01%"
+              result="slice_1b">
+        <animate attributeName="dx"
+                 keyTimes="0; 0.15; 0.22; 0.37; 0.41; 0.43; 0.58; 0.68"
+                 values="0.00; 0.00; 0.01; 0.00; 0.00; -0.00; 0.00; -0.00"
+                 begin="0s"
+                 dur="42.06s"
+                 calcMode="discrete"
+                 repeatCount="indefinite"
+                 fill="freeze" />
+    </feOffset>
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="31%"
+              height="22.37%"
+              result="slice_2a" />
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="53.37%"
+              height="7.80%"
+              result="slice_2b">
+        <animate attributeName="dx"
+                 keyTimes="0; 0.08; 0.30; 0.64; 0.82; 0.91; 0.98; 0.99"
+                 values="0.01; 0.00; 0.01; -0.01; 0.01; 0.00; -0.00; -0.00"
+                 begin="0s"
+                 dur="47.35s"
+                 calcMode="discrete"
+                 repeatCount="indefinite"
+                 fill="freeze" />
+    </feOffset>
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="61%"
+              height="20.20%"
+              result="slice_3a" />
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="81.20%"
+              height="8.63%"
+              result="slice_3b">
+        <animate attributeName="dx"
+                 keyTimes="0; 0.11; 0.16; 0.25; 0.33; 0.43; 0.53; 0.68; 0.75; 0.83; 0.99"
+                 values="-0.01; -0.01; 0.01; 0.00; -0.00; -0.00; 0.00; 0.01; -0.01; -0.01; 0.00"
+                 begin="0s"
+                 dur="46.36s"
+                 calcMode="discrete"
+                 repeatCount="indefinite"
+                 fill="freeze" />
+    </feOffset>
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="89%"
+              height="15.59%"
+              result="slice_4a" />
+    <feOffset in="blended"
+              dx="0"
+              dy="0"
+              y="104.59%"
+              height="7.52%"
+              result="slice_4b">
+        <animate attributeName="dx"
+                 keyTimes="0; 0.24; 0.25; 0.32; 0.47; 0.58; 0.65; 0.69; 0.79"
+                 values="0.00; -0.01; 0.00; -0.01; -0.00; 0.00; -0.01; 0.01; 0.01"
+                 begin="0s"
+                 dur="36.33s"
+                 calcMode="discrete"
+                 repeatCount="indefinite"
+                 fill="freeze" />
+    </feOffset>
+    <feMerge>
+        <feMergeNode in="slice_1a" />
+        <feMergeNode in="slice_1b" />
+        <feMergeNode in="slice_2a" />
+        <feMergeNode in="slice_2b" />
+        <feMergeNode in="slice_3a" />
+        <feMergeNode in="slice_3b" />
+        <feMergeNode in="slice_4a" />
+        <feMergeNode in="slice_4b" />
+    </feMerge>
+    </filter>
+    </defs>
 </svg>

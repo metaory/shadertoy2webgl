@@ -8,8 +8,11 @@ const CLI_PATH = path.join(process.cwd(), 'src', 'index.js');
 const TEST_SHADER_ID = 'MdX3Rr';
 
 function cleanup() {
-    if (fs.existsSync(TEST_SHADER_ID)) {
-        fs.rmSync(TEST_SHADER_ID, { recursive: true, force: true });
+    const dirs = [TEST_SHADER_ID, 'wdyczG'];
+    for (const dir of dirs) {
+        if (fs.existsSync(dir)) {
+            fs.rmSync(dir, { recursive: true, force: true });
+        }
     }
 }
 
@@ -57,11 +60,12 @@ test('CLI', async (t) => {
         await runCLI([TEST_SHADER_ID]);
         
         // Second run without force
-        const { code, stderr } = await runCLI([TEST_SHADER_ID]);
+        const { code, stderr } = await runCLI([TEST_SHADER_ID, 'wdyczG']);
         
-        assert.strictEqual(code, 1, 'Should exit with code 1');
+        assert.strictEqual(code, 0, 'Should exit with code 0');
         assert.ok(stderr.includes('already exists'), 'Should show directory exists error');
         assert.ok(stderr.includes('--force'), 'Should suggest using --force flag');
+        assert.ok(fs.existsSync(path.join('wdyczG', 'index.html')), 'Should still process second shader');
     });
 
     await t.test('should overwrite existing directory with force flag', async () => {
@@ -89,10 +93,41 @@ test('CLI', async (t) => {
     await t.test('should handle invalid shader ID', async () => {
         const { code, stdout, stderr } = await runCLI(['invalid-shader-id']);
         
-        assert.strictEqual(code, 1, 'Should exit with code 1');
-        assert.ok(stderr.includes('Error:'), 'Should show error message');
-        assert.ok(stderr.includes('Failed to process shader'), 'Should show processing error');
-        assert.strictEqual(stdout, '', 'Should not have output');
+        assert.strictEqual(code, 0, 'Should exit with code 0');
+        assert.ok(stdout.includes('Processing shader: invalid-shader-id'), 'Should show processing message');
+        assert.ok(stdout.includes('Done!'), 'Should show completion message');
+        assert.ok(stderr.includes('Error processing shader invalid-shader-id'), 'Should show error message');
+    });
+
+    await t.test('should process multiple valid shader IDs', async () => {
+        const { code, stdout, stderr } = await runCLI([TEST_SHADER_ID, 'wdyczG']);
+        
+        assert.strictEqual(code, 0, 'Should exit with code 0');
+        assert.ok(stdout.includes(`Processing shader: ${TEST_SHADER_ID}`), 'Should show first shader processing');
+        assert.ok(stdout.includes('Processing shader: wdyczG'), 'Should show second shader processing');
+        assert.ok(stdout.includes('Done!'), 'Should show completion message');
+        assert.strictEqual(stderr, '', 'Should not have errors');
+        
+        // Verify files were created for both shaders
+        assert.ok(fs.existsSync(path.join(TEST_SHADER_ID, 'index.html')), 'First HTML file should exist');
+        assert.ok(fs.existsSync(path.join(TEST_SHADER_ID, 'shader.js')), 'First JS file should exist');
+        assert.ok(fs.existsSync(path.join('wdyczG', 'index.html')), 'Second HTML file should exist');
+        assert.ok(fs.existsSync(path.join('wdyczG', 'shader.js')), 'Second JS file should exist');
+    });
+
+    await t.test('should continue processing after one shader fails', async () => {
+        const { code, stdout, stderr } = await runCLI([TEST_SHADER_ID, 'invalid-shader-id', 'wdyczG']);
+        
+        assert.strictEqual(code, 0, 'Should exit with code 0');
+        assert.ok(stdout.includes(`Processing shader: ${TEST_SHADER_ID}`), 'Should show first shader processing');
+        assert.ok(stdout.includes('Processing shader: invalid-shader-id'), 'Should show second shader processing');
+        assert.ok(stdout.includes('Processing shader: wdyczG'), 'Should show third shader processing');
+        assert.ok(stdout.includes('Done!'), 'Should show completion message');
+        assert.ok(stderr.includes('Error processing shader invalid-shader-id'), 'Should show error for invalid shader');
+        
+        // Verify files were created for valid shaders
+        assert.ok(fs.existsSync(path.join(TEST_SHADER_ID, 'index.html')), 'First HTML file should exist');
+        assert.ok(fs.existsSync(path.join('wdyczG', 'index.html')), 'Third HTML file should exist');
     });
 
     cleanup();

@@ -1,8 +1,6 @@
 <div align="center">
-    <img src=".github/assets/logo.svg" alt="demo" height="128" />
-    <h3><kbd>shadertoy2webgl</kbd></h3>
-    <h4>Convert <kbd>ShaderToy</kbd> shaders</h4>
-    <h4>to modern <kbd>WebGL2</kbd></h4>
+    <img src=".github/assets/logo.svg" alt="demo" height="60" />
+    <h3><kbd>ShaderToy</kbd> ❯❯ <kbd>WebGL2</kbd></h3>
     <img src="demo/DdcfzH.png" alt="demo" height="200" />
 </div>
 
@@ -13,7 +11,7 @@
 npm install -g shadertoy2webgl
 
 # Or use npx (no installation needed)
-npx shadertoy2webgl <shader-id>
+npx shadertoy2webgl <shader-id> [<shader-id>...]
 
 # Or install as a project dependency
 npm install shadertoy2webgl
@@ -23,15 +21,18 @@ npm install shadertoy2webgl
 
 ```bash
 # Using global installation
-shadertoy2webgl <shader-id>
+shadertoy2webgl <shader-id> [<shader-id>...]
 # or
-st2webgl <shader-id>
+st2webgl <shader-id> [<shader-id>...]
 
 # Using npx (no installation needed)
-npx shadertoy2webgl <shader-id>
+npx shadertoy2webgl <shader-id> [<shader-id>...]
 
-# Example with a specific shader
-shadertoy2webgl MdX3Rr
+# Example with multiple shaders
+shadertoy2webgl MdX3Rr wdyczG DdcfzH
+
+# Force overwrite existing directories
+shadertoy2webgl --force <shader-id> [<shader-id>...]
 ```
 
 ## Library Usage
@@ -71,7 +72,7 @@ We provide two sample demos showcasing different shader effects:
 <td>
 <code>st2webgl wdyczG</code><br/>
 <a href="demo/wdyczG/index.html">demo/wdyczG/index.html</a><br/>
-<i><a href="https://www.shadertoy.com/view/wdyczG">shadertoy.com/view/wdyczG</a></i>
+<i><a href="https://www.shadertoy.com/view/wdyczG">shadertoy.com/view/wdyczG</a></i><br/>
 </td>
 </tr></table>
 
@@ -80,7 +81,7 @@ We provide two sample demos showcasing different shader effects:
 <td>
 <code>st2webgl DdcfzH</code><br/>
 <a href="demo/DdcfzH/index.html">demo/DdcfzH/index.html</a><br/>
-<i><a href="https://www.shadertoy.com/view/DdcfzH">shadertoy.com/view/DdcfzH</a></i>
+<i><a href="https://www.shadertoy.com/view/DdcfzH">shadertoy.com/view/DdcfzH</a></i><br/>
 </td>
 </tr></table>
 
@@ -91,13 +92,11 @@ The tool generates files in a directory named after the shader ID:
 - `shader.js`: The WebGL2 shader code
 - `shader.json`: Shader metadata and code
 
-If the directory already exists, the tool will refuse to overwrite it 
-
-unless the `--force` flag is used:
+If any directory already exists, the tool will refuse to overwrite it unless the `--force` flag is used:
 
 ```bash
-# Overwrite existing directory
-shadertoy2webgl <shader-id> --force
+# Overwrite existing directories
+shadertoy2webgl --force <shader-id> [<shader-id>...]
 ```
 
 ## Testing
@@ -116,6 +115,7 @@ The test suite verifies:
 - Error handling
 - Output validation
 - Uniform handling
+
 
 ## License
 

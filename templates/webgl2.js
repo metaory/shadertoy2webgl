@@ -46,7 +46,10 @@ gl.useProgram(program);
 gl.enableVertexAttribArray(positionLocation);
 gl.vertexAttribPointer(positionLocation,2,gl.FLOAT,false,0,0);
 
-function resize() {
+const mouse = { x: 0, y: 0 };
+canvas.addEventListener('mousemove', e => Object.assign(mouse, { x: e.clientX, y: e.clientY }));
+
+const render = () => {
     const displayWidth = canvas.clientWidth;
     const displayHeight = canvas.clientHeight;
     if(canvas.width !== displayWidth || canvas.height !== displayHeight) {
@@ -54,25 +57,12 @@ function resize() {
         canvas.height = displayHeight;
     }
     gl.viewport(0,0,canvas.width,canvas.height);
-}
-
-const pos = {
-    x: 0,
-    y: 0
-}
-canvas.addEventListener('mousemove',e => {
-    pos.x = e.clientX;
-    pos.y = e.clientY;
-});
-
-const startTime = Date.now();
-function render() {
-    resize();
+    
     gl.uniform3f(iResolutionLocation,canvas.width,canvas.height,1.0);
-    gl.uniform1f(iTimeLocation,(Date.now()-startTime)/1000);
-    gl.uniform1f(iFrameLocation,Math.floor((Date.now()-startTime)/16.67));
-    gl.uniform4f(iMouseLocation,pos.x,pos.y,0,0);
+    gl.uniform1f(iTimeLocation,(Date.now()-performance.now())/1000);
+    gl.uniform1f(iFrameLocation,Math.floor((Date.now()-performance.now())/16.67));
+    gl.uniform4f(iMouseLocation,mouse.x,mouse.y,0,0);
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
     requestAnimationFrame(render);
-}
+};
 render(); 
