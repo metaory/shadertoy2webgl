@@ -49,6 +49,7 @@ gl.vertexAttribPointer(positionLocation,2,gl.FLOAT,false,0,0);
 const mouse = { x: 0, y: 0 };
 canvas.addEventListener('mousemove', e => Object.assign(mouse, { x: e.clientX, y: e.clientY }));
 
+const startTime = performance.now();
 const render = () => {
     const displayWidth = canvas.clientWidth;
     const displayHeight = canvas.clientHeight;
@@ -58,9 +59,10 @@ const render = () => {
     }
     gl.viewport(0,0,canvas.width,canvas.height);
     
+    const currentTime = (performance.now() - startTime) / 1000;
     gl.uniform3f(iResolutionLocation,canvas.width,canvas.height,1.0);
-    gl.uniform1f(iTimeLocation,(Date.now()-performance.now())/1000);
-    gl.uniform1f(iFrameLocation,Math.floor((Date.now()-performance.now())/16.67));
+    gl.uniform1f(iTimeLocation,currentTime);
+    gl.uniform1f(iFrameLocation,Math.floor(currentTime * 60));
     gl.uniform4f(iMouseLocation,mouse.x,mouse.y,0,0);
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
     requestAnimationFrame(render);

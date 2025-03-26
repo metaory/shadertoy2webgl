@@ -34,10 +34,11 @@ const createFormData = shaderId => {
 };
 
 const validateShaderData = (shaderData, shaderId) => {
-    if (!Array.isArray(shaderData) || !shaderData[0]?.renderpass?.[0]?.code) {
+    const [{ renderpass: [{ code }] }] = shaderData;
+    if (!code) {
         throw new Error(`Invalid shader data received for '${shaderId}'`);
     }
-    const shaderCode = shaderData[0].renderpass[0].code.trim();
+    const shaderCode = code.trim();
     if (!shaderCode) {
         throw new Error(`Shader '${shaderId}' has no code`);
     }
