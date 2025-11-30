@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { shadertoy2webgl } from './lib.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { version } = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
 
 const SETUP_INSTRUCTIONS = `
 To fetch shaders, create .shadertoy.curl:
@@ -18,15 +24,22 @@ const args = process.argv.slice(2);
 const force = args.includes('--force');
 const debug = args.includes('--debug');
 const help = args.includes('--help') || args.includes('-h');
+const showVersion = args.includes('--version') || args.includes('-v');
 const shaderIds = args.filter(arg => !arg.startsWith('--') && !arg.startsWith('-'));
+
+if (showVersion) {
+    console.log(version);
+    process.exit(0);
+}
 
 if (help) {
     console.log(`Usage: shadertoy2webgl <shader-id> [options]
 
 Options:
-  --force   Overwrite existing directory
-  --debug   Show debug output
-  --help    Show this help
+  --force     Overwrite existing directory
+  --debug     Show debug output
+  --version   Show version
+  --help      Show this help
 ${SETUP_INSTRUCTIONS}`);
     process.exit(0);
 }
