@@ -17,22 +17,41 @@ npx shadertoy2webgl <shader-id> [<shader-id>...]
 npm install shadertoy2webgl
 ```
 
+## Setup
+
+Shadertoy uses Cloudflare protection. To fetch shaders, provide a curl command from your browser:
+
+1. Open [shadertoy.com](https://www.shadertoy.com) in your browser
+2. Open DevTools (`F12`) → **Network** tab
+3. Click any shader to load it
+4. Right-click the `shadertoy` request → **Copy** → **Copy as cURL**
+5. Save to `.shadertoy.curl`:
+
+```bash
+# macOS
+pbpaste > .shadertoy.curl
+
+# Linux (X11)
+xclip -selection clipboard -o > .shadertoy.curl
+
+# Lookup order: $SHADERTOY_CURL → ./.shadertoy.curl → ~/.shadertoy.curl
+```
+
 ## CLI Usage
 
 ```bash
-# Using global installation
-shadertoy2webgl <shader-id> [<shader-id>...]
-# or
-st2webgl <shader-id> [<shader-id>...]
+shadertoy2webgl <shader-id> [options]
+st2webgl <shader-id> [options]        # alias
 
-# Using npx (no installation needed)
-npx shadertoy2webgl <shader-id> [<shader-id>...]
+# Options
+--force   Overwrite existing directory
+--debug   Show debug output
+--help    Show help
 
-# Example with multiple shaders
+# Examples
+shadertoy2webgl MdX3Rr
 shadertoy2webgl MdX3Rr wdyczG DdcfzH
-
-# Force overwrite existing directories
-shadertoy2webgl --force <shader-id> [<shader-id>...]
+shadertoy2webgl --force --debug MdX3Rr
 ```
 
 ## Library Usage
@@ -40,17 +59,10 @@ shadertoy2webgl --force <shader-id> [<shader-id>...]
 ```javascript
 import { shadertoy2webgl } from 'shadertoy2webgl';
 
-// Convert a shader and get paths to generated files
-const { html, js } = await shadertoy2webgl('shader-id');
-console.log(html, js);
+const { html, js } = await shadertoy2webgl('MdX3Rr');
 
-// Example with error handling
-try {
-    const { html, js } = await shadertoy2webgl('MdX3Rr');
-    console.log('Generated files:', { html, js });
-} catch (error) {
-    console.error('Failed to process shader:', error.message);
-}
+// With options
+await shadertoy2webgl('MdX3Rr', { force: true, debug: true });
 ```
 
 ## Features

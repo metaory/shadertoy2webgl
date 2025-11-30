@@ -2,3 +2,4 @@ node_modules/
 dump/
 .dev/
 .DS_Store
+.shadertoy.curl
