@@ -8,16 +8,11 @@ import { shadertoy2webgl } from './lib.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const { version } = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8'));
 
-const SETUP_INSTRUCTIONS = `
-To fetch shaders, create .shadertoy.curl:
-
-  1. Open shadertoy.com in browser
-  2. Open DevTools (F12) > Network tab
-  3. Click any shader to load it
-  4. Right-click "shadertoy" request > Copy > Copy as cURL
-  5. Save to .shadertoy.curl (or ~/.shadertoy.curl)
-
-Example: pbpaste > .shadertoy.curl
+const SETUP = `
+  1. Open a shader on shadertoy.com
+  2. DevTools (F12) > Network > click the "shadertoy" request
+  3. Copy the response body (or Save as) into a .json file
+  4. Run: shadertoy2webgl thatfile.json
 `;
 
 const args = process.argv.slice(2);
@@ -25,63 +20,62 @@ const force = args.includes('--force');
 const debug = args.includes('--debug');
 const help = args.includes('--help') || args.includes('-h');
 const showVersion = args.includes('--version') || args.includes('-v');
-const shaderIds = args.filter(arg => !arg.startsWith('--') && !arg.startsWith('-'));
+const filePaths = args.filter(a => !a.startsWith('--') && !a.startsWith('-'));
 
 if (showVersion) {
-    console.log(version);
-    process.exit(0);
+  console.log(version);
+  process.exit(0);
 }
 
 if (help) {
-    console.log(`Usage: shadertoy2webgl <shader-id> [options]
+  console.log(`Usage: shadertoy2webgl <response.json> [response.json ...]
 
 Options:
-  --force     Overwrite existing directory
-  --debug     Show debug output
-  --version   Show version
-  --help      Show this help
-${SETUP_INSTRUCTIONS}`);
-    process.exit(0);
+  --force   Overwrite existing directories
+  --debug   Debug output
+  --help    This help
+${SETUP}`);
+  process.exit(0);
 }
 
-if (shaderIds.length === 0) {
-    console.error('Please provide at least one shader ID');
-    console.log(SETUP_INSTRUCTIONS);
-    process.exit(1);
+if (filePaths.length === 0) {
+  console.error('Provide at least one response file (.json from Shadertoy API).');
+  console.log(SETUP);
+  process.exit(1);
 }
 
-const processShader = async shaderId => {
+const processFile = async (filePath) => {
+  const results = await shadertoy2webgl(filePath, { force, debug });
+  return results.map(({ shaderId, html, js }) => {
     console.log(`Processing shader: ${shaderId}`);
-    const { html, js } = await shadertoy2webgl(shaderId, { force, debug });
     console.log(`Generated ${html} and ${js}`);
     return { success: true, shaderId };
+  });
 };
 
 const formatSummary = ({ success, failed }) => [
-    '\nSummary:',
-    `✓ Processed: ${success.length}`,
-    ...(failed.length > 0 ? [`✗ Failed: ${failed.length} (${failed.join(', ')})`] : []),
-    'Done!'
+  '\nSummary:',
+  `✓ Processed: ${success.length}`,
+  ...(failed.length > 0 ? [`✗ Failed: ${failed.length} (${failed.join(', ')})`] : []),
+  'Done!'
 ].join('\n');
 
-const processShaders = async () => {
-    const results = await Promise.all(shaderIds.map(async shaderId => {
-        try {
-            return await processShader(shaderId);
-        } catch (error) {
-            console.error(`Error [${shaderId}]:`, error.message);
-            return { success: false, shaderId };
-        }
-    }));
-    const summary = results.reduce((acc, { success, shaderId }) => ({
-        success: success ? [...acc.success, shaderId] : acc.success,
-        failed: !success ? [...acc.failed, shaderId] : acc.failed
-    }), { success: [], failed: [] });
-    
-    console.log(formatSummary(summary));
+const run = async () => {
+  const allSuccess = [];
+  const allFailed = [];
+  for (const filePath of filePaths) {
+    try {
+      const results = await processFile(filePath);
+      for (const r of results) allSuccess.push(r.shaderId);
+    } catch (error) {
+      console.error(`Error [${filePath}]:`, error.message);
+      allFailed.push(filePath);
+    }
+  }
+  console.log(formatSummary({ success: allSuccess, failed: allFailed }));
 };
 
-processShaders().catch(error => {
-    console.error('Fatal error:', error.message);
-    process.exit(1);
+run().catch(error => {
+  console.error('Fatal:', error.message);
+  process.exit(1);
 });

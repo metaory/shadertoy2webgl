@@ -4,130 +4,76 @@
     <img src="demo/DdcfzH.png" alt="demo" height="200" />
 </div>
 
-## Installation
+## Install
 
 ```bash
-# Install globally
 npm install -g shadertoy2webgl
-
-# Or use npx (no installation needed)
-npx shadertoy2webgl <shader-id> [<shader-id>...]
-
-# Or install as a project dependency
-npm install shadertoy2webgl
+# or
+npx shadertoy2webgl <response.json>
 ```
 
-## Setup
+## Usage
 
-Shadertoy uses Cloudflare protection. To fetch shaders, provide a curl command from your browser:
+**One flow:**
 
-1. Open [shadertoy.com](https://www.shadertoy.com) in your browser
-2. Open DevTools (`F12`) → **Network** tab
-3. Click any shader to load it
-4. Right-click the `shadertoy` request → **Copy** → **Copy as cURL**
-5. Save to `.shadertoy.curl`:
+1. Open a shader on [shadertoy.com](https://www.shadertoy.com) in your browser.
+2. Open DevTools (`F12`) → **Network**.
+3. Reload or open the shader so the **shadertoy** (POST) request appears.
+4. Click it → **Response** tab → copy the response body (the JSON) or right‑click → Save as.
+5. Save to a file (e.g. `shader.json`).
+6. Run:
 
 ```bash
-# macOS
-pbpaste > .shadertoy.curl
-
-# Linux (X11)
-xclip -selection clipboard -o > .shadertoy.curl
-
-# Lookup order: $SHADERTOY_CURL → ./.shadertoy.curl → ~/.shadertoy.curl
+shadertoy2webgl shader.json
+# or multiple files
+shadertoy2webgl a.json b.json
+# overwrite existing dirs
+shadertoy2webgl --force shader.json
 ```
 
-## CLI Usage
+**Options:** `--force` (overwrite), `--debug`, `--help`, `--version`.
 
-```bash
-shadertoy2webgl <shader-id> [options]
-st2webgl <shader-id> [options]        # alias
+Output: a directory per shader (named by shader id) with `index.html`, `shader.js`, `shader.json`.
 
-# Options
---force   Overwrite existing directory
---debug   Show debug output
---help    Show help
-
-# Examples
-shadertoy2webgl MdX3Rr
-shadertoy2webgl MdX3Rr wdyczG DdcfzH
-shadertoy2webgl --force --debug MdX3Rr
-```
-
-## Library Usage
+## Library
 
 ```javascript
 import { shadertoy2webgl } from 'shadertoy2webgl';
 
-const { html, js } = await shadertoy2webgl('MdX3Rr');
-
-// With options
-await shadertoy2webgl('MdX3Rr', { force: true, debug: true });
+const results = await shadertoy2webgl('shader.json', { force: true });
+// results = [{ shaderId, html, js }, ...]
 ```
 
 ## Features
 
 - Converts ShaderToy shaders to WebGL2
-- Handles ShaderToy-specific uniforms (iResolution, iTime, iFrame, iMouse)
-- Generates web-compatible HTML and JavaScript
-- Zero dependencies
-- Modern WebGL2 support
-- ESM module support
-- Works with Node.js >= 18
+- Handles ShaderToy uniforms (iResolution, iTime, iFrame, iMouse)
+- Zero dependencies, Node.js >= 18, ESM
 
 ## Demos
 
-We provide two sample demos showcasing different shader effects:
-
 <table><tr>
-<td><img src="demo/wdyczG.png" alt="Plasma Effect" height="90" /></td>
+<td><img src="demo/wdyczG.png" alt="Plasma" height="90" /></td>
 <td>
-<code>st2webgl wdyczG</code><br/>
+<code>st2webgl response.json</code> (after saving that shader’s API response)<br/>
 <a href="demo/wdyczG/index.html">demo/wdyczG/index.html</a><br/>
-<i><a href="https://www.shadertoy.com/view/wdyczG">shadertoy.com/view/wdyczG</a></i><br/>
+<i><a href="https://www.shadertoy.com/view/wdyczG">shadertoy.com/view/wdyczG</a></i>
 </td>
 </tr></table>
 
 <table><tr>
-<td><img src="demo/DdcfzH.png" alt="Abstract Waves" height="90" /></td>
+<td><img src="demo/DdcfzH.png" alt="Waves" height="90" /></td>
 <td>
-<code>st2webgl DdcfzH</code><br/>
 <a href="demo/DdcfzH/index.html">demo/DdcfzH/index.html</a><br/>
-<i><a href="https://www.shadertoy.com/view/DdcfzH">shadertoy.com/view/DdcfzH</a></i><br/>
+<i><a href="https://www.shadertoy.com/view/DdcfzH">shadertoy.com/view/DdcfzH</a></i>
 </td>
 </tr></table>
-
-## Output
-
-The tool generates files in a directory named after the shader ID:
-- `index.html`: A standalone HTML file with the shader
-- `shader.js`: The WebGL2 shader code
-- `shader.json`: Shader metadata and code
-
-If any directory already exists, the tool will refuse to overwrite it unless the `--force` flag is used:
-
-```bash
-# Overwrite existing directories
-shadertoy2webgl --force <shader-id> [<shader-id>...]
-```
 
 ## Testing
 
 ```bash
-# Run tests
 npm test
-
-# Run tests with coverage (requires Node.js >= 20)
-node --test --coverage test/
 ```
-
-The test suite verifies:
-- Shader fetching and conversion
-- File generation
-- Error handling
-- Output validation
-- Uniform handling
-
 
 ## License
 

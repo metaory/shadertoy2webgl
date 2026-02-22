@@ -1,18 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
-import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = path.join(__dirname, "..", "templates");
-const CURL_LOCATIONS = [
-  process.env.SHADERTOY_CURL,
-  ".shadertoy.curl",
-  path.join(os.homedir(), ".shadertoy.curl"),
-].filter(Boolean);
-
-const findCurlFile = () => CURL_LOCATIONS.find(f => fs.existsSync(f));
 
 const readTemplate = (name) =>
   fs.readFileSync(path.join(TEMPLATES_DIR, name), "utf8");
@@ -33,17 +24,6 @@ const debugLog = (debug, label, data) => {
   console.log(`[DEBUG] ${label}:`, typeof data === "object" ? JSON.stringify(data, null, 2) : data);
 };
 
-const buildCurlCmd = (curlFile, shaderId) => {
-  const curl = fs.readFileSync(curlFile, "utf8");
-  const body = `s=${encodeURIComponent(`{ "shaders" : ["${shaderId}"] }`)}&nt=1&nl=1&np=1`;
-  return curl
-    .replace(/^curl\s+/, "curl -s ")
-    .replace(/--data-raw\s+'[^']*'/, `--data-raw '${body}'`)
-    .replace(/--data-raw\s+"[^"]*"/, `--data-raw '${body}'`)
-    .replace(/\\\n\s*/g, " ")
-    .trim();
-};
-
 const validateShaderData = (shaderData, shaderId) => {
   const renderpass = shaderData?.[0]?.renderpass;
   const code = renderpass?.[0]?.code;
@@ -53,38 +33,16 @@ const validateShaderData = (shaderData, shaderId) => {
 
 const extractTitle = (shaderData) => shaderData?.[0]?.info?.name || "";
 
-export const fetchShader = async (shaderId, options = {}) => {
-  const { force = false, debug = false } = options;
-  const curlFile = findCurlFile();
-
-  if (!curlFile) {
-    throw new Error("Curl file not found. Create .shadertoy.curl with a copied curl command");
+const readResponseFile = (filePath) => {
+  const raw = fs.readFileSync(filePath, "utf8").trim();
+  if (raw.startsWith("<")) {
+    throw new Error(`File '${filePath}' contains HTML. Save the response body from DevTools > Network > shadertoy request.`);
   }
-
-  debugLog(debug, "Using curl file", curlFile);
-
-  if (fs.existsSync(shaderId)) {
-    if (!force) throw new Error(`Directory '${shaderId}' exists. Use --force to overwrite.`);
-    fs.rmSync(shaderId, { recursive: true, force: true });
+  const data = JSON.parse(raw);
+  if (!Array.isArray(data) || !data[0]) {
+    throw new Error(`File '${filePath}' should be the Shadertoy API response (JSON array of shader objects).`);
   }
-
-  fs.mkdirSync(shaderId, { recursive: true });
-
-  const cmd = buildCurlCmd(curlFile, shaderId);
-  debugLog(debug, "Curl command (truncated)", cmd.slice(0, 300) + "...");
-
-  const output = execSync(cmd, { encoding: "utf8", shell: "/bin/bash", maxBuffer: 10 * 1024 * 1024 });
-  debugLog(debug, "Response length", output.length);
-
-  const shaderData = JSON.parse(output);
-  debugLog(debug, "Shader info", shaderData?.[0]?.info);
-
-  const shaderCode = validateShaderData(shaderData, shaderId);
-  const title = extractTitle(shaderData);
-  const finalJson = { ...createInitialJson(shaderId, title), code: shaderCode };
-
-  fs.writeFileSync(path.join(shaderId, "shader.json"), JSON.stringify(finalJson, null, 2));
-  return finalJson;
+  return data;
 };
 
 export const convertShader = async (shader) => {
@@ -103,7 +61,30 @@ export const convertShader = async (shader) => {
   return { html: htmlFile, js: jsFile };
 };
 
-export const shadertoy2webgl = async (shaderId, options = {}) => {
-  const shader = await fetchShader(shaderId, options);
-  return convertShader(shader);
+/** Process a Shadertoy API response file. Returns array of { shaderId, html, js } per shader in the file. */
+export const shadertoy2webgl = async (filePath, options = {}) => {
+  const { force = false, debug = false } = options;
+  const items = readResponseFile(filePath);
+  debugLog(debug, "Shaders in file", items.length);
+
+  const results = [];
+  for (const item of items) {
+    const shaderId = item?.info?.id;
+    if (!shaderId) throw new Error(`Missing shader id in response from '${filePath}'`);
+
+    if (fs.existsSync(shaderId) && !force) {
+      throw new Error(`Directory '${shaderId}' exists. Use --force to overwrite.`);
+    }
+    fs.rmSync(shaderId, { recursive: true, force: true });
+    fs.mkdirSync(shaderId, { recursive: true });
+
+    const code = validateShaderData([item], shaderId);
+    const title = extractTitle([item]);
+    const finalJson = { ...createInitialJson(shaderId, title), code };
+    fs.writeFileSync(path.join(shaderId, "shader.json"), JSON.stringify(finalJson, null, 2));
+
+    const { html, js } = await convertShader(finalJson);
+    results.push({ shaderId, html, js });
+  }
+  return results;
 };

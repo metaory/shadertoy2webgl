@@ -1,6 +1,6 @@
 {
   "name": "shadertoy2webgl",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Convert ShaderToy shaders to WebGL2 - CLI and library",
   "type": "module",
   "main": "./src/lib.js",
@@ -14,7 +14,7 @@
   "repository": "git+https://github.com/metaory/shadertoy2webgl.git",
   "scripts": {
     "start": "node src/index.js",
-    "test": "node --test test/"
+    "test": "node --test test/*.js"
   },
   "bin": {
     "shadertoy2webgl": "./src/index.js",
