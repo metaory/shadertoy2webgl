@@ -15,7 +15,8 @@ npx shadertoy2webgl <response.json>
 ## Usage
 
 1. Open a shader on [shadertoy.com](https://www.shadertoy.com). DevTools (F12) → Network, reload.
-2. In the list: **shadertoy** `https://www.shadertoy.com/shadertoy` (POST)—not the view URL. Copy its Response (JSON), save as `shader.json`.
+2. In the list: **shadertoy** `https://www.shadertoy.com/shadertoy` (POST)
+ Copy its Response (JSON), save as `shader.json`.
 3. Run:
 
 ```bash
