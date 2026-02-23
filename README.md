@@ -14,26 +14,17 @@ npx shadertoy2webgl <response.json>
 
 ## Usage
 
-**One flow:**
-
-1. Open a shader on [shadertoy.com](https://www.shadertoy.com) in your browser.
-2. Open DevTools (`F12`) → **Network**.
-3. Reload or open the shader so the **shadertoy** (POST) request appears.
-4. Click it → **Response** tab → copy the response body (the JSON) or right‑click → Save as.
-5. Save to a file (e.g. `shader.json`).
-6. Run:
+1. Open a shader on [shadertoy.com](https://www.shadertoy.com). DevTools (F12) → Network, reload.
+2. In the list: **shadertoy** `https://www.shadertoy.com/shadertoy` (POST)—not the view URL. Copy its Response (JSON), save as `shader.json`.
+3. Run:
 
 ```bash
 shadertoy2webgl shader.json
-# or multiple files
 shadertoy2webgl a.json b.json
-# overwrite existing dirs
-shadertoy2webgl --force shader.json
+shadertoy2webgl --force shader.json   # overwrite
 ```
 
-**Options:** `--force` (overwrite), `--debug`, `--help`, `--version`.
-
-Output: a directory per shader (named by shader id) with `index.html`, `shader.js`, `shader.json`.
+Options: `--force`, `--debug`, `--help`, `--version`. Output: one directory per shader (id as name) with `index.html`, `shader.js`, `shader.json`.
 
 ## Library
 
